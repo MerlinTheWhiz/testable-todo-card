@@ -1,0 +1,277 @@
+:root {
+  --bg: #f3f6f9;
+  --card-bg: #ffffff;
+  --muted: #6b7280;
+  --text: #0f172a;
+  --accent: #346EF6;
+  --danger: #E6224B;
+  --pill-bg: #f1f5f9;
+  --complete: #10b981;
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  min-height: 100vh;
+}
+
+.todo-card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(18, 38, 63, 0.08);
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+  position: relative;
+}
+
+.card-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.card-header .left {
+  flex: 0 0 36px;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  width: 24px;
+  height: 24px;
+
+  border: 2px solid #C4C7C9;
+  border-radius: 6px;
+
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+input[type="checkbox"]:checked::after {
+  content: "✓";
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+input[type="checkbox"]:focus {
+  outline: 3px solid rgba(11, 97, 255, 0.14);
+  outline-offset: 3px;
+}
+
+.title-wrap {
+  margin: 0;
+}
+
+h2[data-testid="test-todo-title"] {
+  font-size: 1.125rem;
+  margin: auto;
+  line-height: 1.2;
+}
+
+.desc[data-testid="test-todo-description"] {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-top: 14px;
+  margin-bottom: 20px;
+  line-height: 1.75;
+}
+
+.priority {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.priority-high {
+  background: #fdecea;
+  color: var(--danger);
+  border: 1px solid #FFB3B6;
+  margin-left: auto;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.meta-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.meta time {
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.meta .status {
+  font-size: 0.95rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.due-date {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.time-remaining {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  background: var(--pill-bg);
+  color: #334155;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 14px;
+  width: max-content;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.tags {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 8px 0;
+}
+
+.tags li {
+  background: #f3f4f6;
+  color: #374151;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  cursor: pointer;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.btn svg {
+  display: block;
+}
+
+.calendar-icon,
+.clock-icon,
+.edit-icon,
+.delete-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+svg[class$="-icon"] path {
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.btn-edit {
+  background: white;
+  border: 2px solid #B4C5FF;
+  color: var(--accent);
+  justify-content: center;
+}
+
+.btn-delete {
+  background: white;
+  border: 2px solid #FFB3B6;
+  color: var(--danger);
+  justify-content: center;
+}
+
+.btn-edit:hover {
+  background: var(--accent);
+  color: white;
+  transition: all 0.4s ease-in-out;
+}
+
+.btn-delete:hover {
+  background: var(--danger);
+  color: white;
+  transition: all 0.4s ease-in-out;
+}
+
+.btn:focus {
+  outline: 3px solid rgba(11, 97, 255, 0.12);
+  outline-offset: 2px;
+}
+
+@media (min-width: 900px) {
+  .todo-card {
+    max-width: 560px;
+  }
+  .actions {
+    flex-direction: row;
+  }
+  .actions .btn {
+    flex: 1;
+  }
+  h2[data-testid="test-todo-title"] {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .todo-card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+  .actions .btn {
+    width: 100%;
+  }
+}
