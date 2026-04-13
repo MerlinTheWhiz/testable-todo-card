@@ -167,6 +167,7 @@ h2[data-testid="test-todo-title"] {
 
 .tags {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   list-style: none;
   padding: 0;
