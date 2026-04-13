@@ -1,7 +1,7 @@
 ## How to run locally
 
 1. Clone the repo:
-   git clone <repo-url>
+   git clone repo-url
 
 2. Open the folder:
    cd todo-card
