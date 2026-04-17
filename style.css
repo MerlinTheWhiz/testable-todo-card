@@ -92,15 +92,19 @@ h2[data-testid="test-todo-title"] {
   font-size: 1.125rem;
   margin: auto;
   line-height: 1.2;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .desc[data-testid="test-todo-description"] {
   margin: 0;
   color: var(--muted);
   font-size: 0.95rem;
-  margin-top: 14px;
+  margin-top: 4px;
   margin-bottom: 20px;
   line-height: 1.75;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .priority {
@@ -159,9 +163,10 @@ h2[data-testid="test-todo-title"] {
 
 .priority-high {
   background: #fdecea;
-  color: var(--danger);
-  border: 1px solid #FFB3B6;
+  color: #D31238;
+  border: 1.5px solid #FF8A90;
   margin-left: auto;
+  font-weight: 700;
 }
 
 .meta {
@@ -215,6 +220,30 @@ h2[data-testid="test-todo-title"] {
   width: max-content;
   font-size: 0.85rem;
   font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.time-remaining.overdue-text {
+  color: var(--danger);
+  background: #fdecea;
+}
+
+.due-date-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.overdue-badge {
+  background: var(--danger);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .tags {
@@ -304,6 +333,157 @@ svg[class$="-icon"] path {
   outline-offset: 2px;
 }
 
+/* Edit Form Styles */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.form-control {
+  padding: 10px 12px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(52, 110, 246, 0.15);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.edit-actions .btn {
+  flex: 1;
+  justify-content: center;
+}
+
+.btn-save {
+  background: var(--accent);
+  color: white;
+}
+
+.btn-save:hover {
+  background: #2558d4;
+}
+
+.btn-cancel {
+  background: #f1f5f9;
+  color: var(--text);
+}
+
+.btn-cancel:hover {
+  background: #e2e8f0;
+}
+
+/* Button & Select UI Upgrades */
+.btn-expand {
+  background: transparent;
+  border: 1.5px solid transparent;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  margin: 6px 0 2px -4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-expand:hover {
+  background: rgba(52, 110, 246, 0.08);
+}
+
+.btn-expand:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.btn-expand::after {
+  content: '↓';
+  font-size: 0.8rem;
+  transition: transform 0.2s;
+}
+
+.btn-expand[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+
+.btn-expand[hidden] + #todo-collapsible-section {
+  margin-top: 16px;
+}
+
+.status-select {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  color: transparent;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px;
+  transition: transform 0.2s;
+  margin-left: -6px;
+}
+
+.status-select:focus {
+  outline: none;
+  transform: scale(1.1);
+}
+
+.status-select:hover {
+  opacity: 0.7;
+}
+
+.status-select option {
+  color: var(--text);
+  background: white;
+}
+
+#todo-collapsible-section.is-collapsed .desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 @media (min-width: 900px) {
   .todo-card {
     max-width: 560px;
@@ -317,6 +497,9 @@ svg[class$="-icon"] path {
   h2[data-testid="test-todo-title"] {
     font-size: 1.3rem;
   }
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 420px) {
@@ -326,5 +509,9 @@ svg[class$="-icon"] path {
   }
   .actions .btn {
     width: 100%;
+  }
+  .meta {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 }

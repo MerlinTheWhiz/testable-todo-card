@@ -30,11 +30,27 @@
           </div>
 
           <span class="priority priority-high" data-testid="test-todo-priority">
-            <span class="priority-indicator" data-testid="test-todo-priority-indicator"></span>
+            <span
+              class="priority-indicator"
+              data-testid="test-todo-priority-indicator"
+            ></span>
             HIGH
           </span>
         </div>
-        <div>
+        <button
+          class="btn-expand"
+          data-testid="test-todo-expand-toggle"
+          aria-expanded="false"
+          aria-controls="todo-collapsible-section"
+          type="button"
+        >
+          Expand
+        </button>
+
+        <div
+          data-testid="test-todo-collapsible-section"
+          id="todo-collapsible-section"
+        >
           <p class="desc" data-testid="test-todo-description">
             Build a testable todo card using vanilla JS, HTML, and CSS with the
             exact data-testid values for automated tests.
@@ -43,27 +59,30 @@
         <div class="meta">
           <div class="meta-item">
             <div class="meta-label">Due date</div>
-            <time
-              class="due-date"
-              data-testid="test-todo-due-date"
-              datetime="2026-04-16T18:00:00Z"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="calendar-icon"
+            <div class="due-date-wrap">
+              <time
+                class="due-date"
+                data-testid="test-todo-due-date"
+                datetime="2026-04-16T18:00:00Z"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
-                />
-              </svg>
-              <span>April 16, 2026</span>
-            </time>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="calendar-icon"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+                  />
+                </svg>
+                <span>April 16, 2026</span>
+              </time>
+              <div class="overdue-badge" data-testid="test-todo-overdue-indicator" hidden>Overdue</div>
+            </div>
           </div>
 
           <div class="meta-item">
@@ -71,7 +90,7 @@
             <div class="status-row">
               <div data-testid="test-todo-status">In Progress</div>
 
-              <select data-testid="test-todo-status-control">
+              <select class="status-select" data-testid="test-todo-status-control" aria-label="Status">
                 <option>Pending</option>
                 <option>In Progress</option>
                 <option>Done</option>
@@ -155,36 +174,42 @@
         </div>
       </div>
 
-      <div data-testid="test-todo-edit-form" hidden>
-        <label>
-          Title
-          <input data-testid="test-todo-edit-title-input" />
-        </label>
+      <div class="edit-form" data-testid="test-todo-edit-form" hidden>
+        <div class="form-group">
+          <label for="edit-title">Title</label>
+          <input type="text" id="edit-title" class="form-control" data-testid="test-todo-edit-title-input" maxlength="60" />
+        </div>
 
-        <label>
-          Description
-          <textarea data-testid="test-todo-edit-description-input"></textarea>
-        </label>
+        <div class="form-group">
+          <label for="edit-desc">Description</label>
+          <textarea id="edit-desc" class="form-control" data-testid="test-todo-edit-description-input" rows="4"></textarea>
+        </div>
 
-        <label>
-          Priority
-          <select data-testid="test-todo-edit-priority-select">
-            <option>Low</option>
-            <option>Medium</option>
-            <option>High</option>
-          </select>
-        </label>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-priority">Priority</label>
+            <select id="edit-priority" class="form-control" data-testid="test-todo-edit-priority-select">
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+            </select>
+          </div>
 
-        <label>
-          Due Date
-          <input
-            type="datetime-local"
-            data-testid="test-todo-edit-due-date-input"
-          />
-        </label>
+          <div class="form-group">
+            <label for="edit-date">Due Date</label>
+            <input
+              type="datetime-local"
+              id="edit-date"
+              class="form-control"
+              data-testid="test-todo-edit-due-date-input"
+            />
+          </div>
+        </div>
 
-        <button data-testid="test-todo-save-button">Save</button>
-        <button data-testid="test-todo-cancel-button">Cancel</button>
+        <div class="edit-actions">
+          <button class="btn btn-save" data-testid="test-todo-save-button">Save</button>
+          <button class="btn btn-cancel" data-testid="test-todo-cancel-button">Cancel</button>
+        </div>
       </div>
     </article>
 

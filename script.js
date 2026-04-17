@@ -1,5 +1,7 @@
 const viewMode = document.querySelector('[data-testid="test-todo-view-mode"]');
 const titleEl = document.querySelector('[data-testid="test-todo-title"]');
+const expandBtn = document.querySelector('[data-testid="test-todo-expand-toggle"]');
+const collapsibleSection = document.querySelector('[data-testid="test-todo-collapsible-section"]');
 const descEl = document.querySelector('[data-testid="test-todo-description"]');
 
 const priorityEl = document.querySelector('[data-testid="test-todo-priority"]');
@@ -15,6 +17,10 @@ const checkboxEl = document.querySelector(
 
 const dueDateTextEl = document.querySelector(
   '[data-testid="test-todo-due-date"] span'
+);
+
+const overdueIndicator = document.querySelector(
+  '[data-testid="test-todo-overdue-indicator"]'
 );
 
 const timeEl = document.querySelector(
@@ -47,19 +53,19 @@ const cancelBtn = document.querySelector(
   '[data-testid="test-todo-cancel-button"]'
 );
 
-// ---------------- STATE ----------------
+// App state definition
 const state = {
-  title: titleEl.textContent,
-  description: descEl.textContent,
+  title: titleEl.textContent.trim().replace(/\s+/g, ' '),
+  description: descEl.textContent.trim().replace(/\s+/g, ' '),
   status: statusEl.textContent || "In Progress",
   priority: "Medium",
   dueDate: "2026-04-16T18:00:00Z",
-
+  isExpanded: false,
   isEditing: false,
   draft: null,
 };
 
-// ---------------- HELPERS ----------------
+// Helper functions
 function getPriorityClass(priority) {
   if (priority === "Low") return "priority-low";
   if (priority === "Medium") return "priority-medium";
@@ -93,13 +99,36 @@ function updatePriorityUI() {
   }
 }
 
-// ---------------- RENDER ----------------
+function updateExpandUI() {
+  const shouldCollapse = state.description.length > 120;
+
+  // Hide expand button if the text is short
+  if (!shouldCollapse) {
+    expandBtn.hidden = true;
+    collapsibleSection.classList.remove("is-collapsed");
+    return;
+  }
+
+  expandBtn.hidden = false;
+
+  if (state.isExpanded) {
+    collapsibleSection.classList.remove("is-collapsed");
+    expandBtn.textContent = "Collapse";
+    expandBtn.setAttribute("aria-expanded", "true");
+  } else {
+    collapsibleSection.classList.add("is-collapsed");
+    expandBtn.textContent = "Expand";
+    expandBtn.setAttribute("aria-expanded", "false");
+  }
+}
+
+// Main render loop to sync the DOM with state
 function render() {
   checkboxEl.checked = state.status === "Done";
   titleEl.textContent = state.title;
   descEl.textContent = state.description;
 
-  // Due date UI
+  // Format and set due date
   dueDateTextEl.textContent = new Date(state.dueDate).toLocaleDateString(
     undefined,
     {
@@ -114,45 +143,61 @@ function render() {
   statusSelect.value = state.status;
 
 
-  // STATUS UI
+  // Apply corresponding styles for the current status
   if (state.status === "Done") {
     titleEl.style.textDecoration = "line-through";
     statusEl.style.color = "var(--complete)";
     statusEl.style.fontWeight = "600";
+  } else if (state.status === "In Progress") {
+    titleEl.style.textDecoration = "none";
+    statusEl.style.color = "var(--warning)";
+    statusEl.style.fontWeight = "600";
   } else {
     titleEl.style.textDecoration = "none";
-    statusEl.style.color = "var(--accent)";
+    statusEl.style.color = "var(--text)";
     statusEl.style.fontWeight = "600";
   }
+   updateExpandUI();
 
-  // PRIORITY
+  // Refresh priority display
   updatePriorityUI();
 
-  // TIME
+  // Refresh time remaining logic
   updateTimeRemaining();
 
-  // EDIT MODE TOGGLE
+  // Switch between view and edit modes
   if (state.isEditing) {
+    const wasHidden = viewMode.hidden === false;
     viewMode.hidden = true;
     editForm.hidden = false;
 
     editTitleInput.value = state.draft.title;
     editDescInput.value = state.draft.description;
     editPrioritySelect.value = state.draft.priority;
-
     editDueDateInput.value = state.draft.dueDate || "";
+    
+    if (wasHidden) {
+      editTitleInput.focus();
+    }
   } else {
+    const wasEditing = editForm.hidden === false;
     viewMode.hidden = false;
     editForm.hidden = true;
+    
+    if (wasEditing) {
+      editBtn.focus();
+    }
   }
 }
 
 render();
 
-// ---------------- TIME ----------------
+
 function updateTimeRemaining() {
   if (state.status === "Done") {
     timeTextEl.textContent = "Completed";
+    timeEl.classList.remove("overdue-text");
+    if (overdueIndicator) overdueIndicator.hidden = true;
     return;
   }
 
@@ -165,23 +210,47 @@ function updateTimeRemaining() {
   const days = Math.round(diff / (1000 * 60 * 60 * 24));
 
   let text = "";
+  const isOverdue = diff < 0;
 
-  if (diff < 0) {
-    text = `Overdue by ${Math.abs(hours)} hour(s)`;
-  } else if (minutes < 1) {
-    text = "Due now!";
-  } else if (hours < 24) {
-    text = `Due in ${hours} hour(s)`;
-  } else if (days === 1) {
-    text = "Due tomorrow";
+  if (isOverdue) {
+    timeEl.classList.add("overdue-text");
+    if (overdueIndicator) overdueIndicator.hidden = false;
+    
+    const absMinutes = Math.abs(minutes);
+    const absHours = Math.abs(hours);
+    const absDays = Math.abs(Math.floor(diff / (1000 * 60 * 60 * 24)));
+    
+    if (absDays >= 1) {
+      text = `Overdue by ${absDays} day(s)`;
+    } else if (absHours >= 1) {
+      text = `Overdue by ${absHours} hour(s)`;
+    } else {
+      text = `Overdue by ${absMinutes} minute(s)`;
+    }
   } else {
-    text = `Due in ${days} days`;
+    timeEl.classList.remove("overdue-text");
+    if (overdueIndicator) overdueIndicator.hidden = true;
+    
+    if (minutes < 1) {
+      text = "Due now!";
+    } else if (hours < 1) {
+      text = `Due in ${minutes} minute(s)`;
+    } else if (hours < 24) {
+      text = `Due in ${hours} hour(s)`;
+    } else if (days === 1) {
+      text = "Due tomorrow";
+    } else {
+      text = `Due in ${days} days`;
+    }
   }
 
   timeTextEl.textContent = text;
 }
 
-// ---------------- EVENTS ----------------
+// Update time every 30 seconds
+setInterval(updateTimeRemaining, 30000);
+
+// Event listeners
 checkboxEl.addEventListener("change", () => {
   state.status = checkboxEl.checked ? "Done" : "Pending";
   render();
@@ -190,6 +259,11 @@ checkboxEl.addEventListener("change", () => {
 statusSelect.addEventListener("change", () => {
   state.status = statusSelect.value;
   render();
+});
+
+expandBtn.addEventListener("click", () => {
+  state.isExpanded = !state.isExpanded;
+  updateExpandUI();
 });
 
 editBtn.addEventListener("click", () => {
