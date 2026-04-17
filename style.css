@@ -4,6 +4,8 @@
   --muted: #6b7280;
   --text: #0f172a;
   --accent: #346EF6;
+  --success: #1e7e34;
+  --warning: #f29912;
   --danger: #E6224B;
   --pill-bg: #f1f5f9;
   --complete: #10b981;
@@ -102,13 +104,57 @@ h2[data-testid="test-todo-title"] {
 }
 
 .priority {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+
   padding: 6px 10px;
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.6px;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.priority-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  background: currentColor;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.priority-low {
+  background: #e6f4ea;
+  color: var(--success);
+  border: 1px solid #a8e0b3;
+  margin-left: auto;
+}
+
+.priority-medium {
+  background: #fff4e5;
+  color: var(--warning);
+  border: 1px solid #ffd59e;
+  margin-left: auto;
 }
 
 .priority-high {
@@ -143,6 +189,12 @@ h2[data-testid="test-todo-title"] {
   font-size: 0.95rem;
   color: var(--accent);
   font-weight: 600;
+}
+
+.status-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 .due-date {
